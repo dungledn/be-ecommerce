@@ -25,21 +25,18 @@ jobs:
       # - run: sudo apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libmcrypt-dev libpng-dev && sudo -E docker-php-ext-install -j$(nproc) iconv mcrypt && sudo docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && sudo -E docker-php-ext-install -j$(nproc) gd pdo_mysql
 
       # Download and cache dependencies
+      # Composer
       - restore_cache:
+          name: Restore composer cache
           keys:
-            # "composer.lock" can be used if it is committed to the repo
-            - v1-dependencies-{{ checksum "composer.json" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
-
-      - run:
-          name: "Install Dependencies"
-          command: composer install -n --prefer-dist
-
+          - composer-{{ checksum "composer.json" }}
+          - composer-
+      - run: composer install -n --prefer-dist
       - save_cache:
-          key: v1-dependencies-{{ checksum "composer.json" }}
+          name: Store composer cache
+          key: composer-{{ checksum "composer.json" }}
           paths:
-            - ./vendor
+            - vendor
 
       # prepare the database
       - run:
