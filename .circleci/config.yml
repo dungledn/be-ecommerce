@@ -7,7 +7,7 @@ jobs:
   build:
     docker:
       # specify the version you desire here
-      - image: circleci/php:7.0.32-apache-stretch-node-browsers
+      - image: circleci/node:14.17.3-buster-browsers
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
