@@ -9,10 +9,10 @@ jobs:
       # Specify the version you desire here
       - image: circleci/php:7.4-node-browsers
 
-      - image: mysql:5.7
+      - image: circleci/mysql
         environment:
-          MYSQL_ALLOW_EMPTY_PASSWORD: yes
-          MYSQL_ROOT_PASSWORD: ''
+          # MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_ROOT_PASSWORD: root
           MYSQL_DATABASE: circle_test
     steps:
       - checkout
