@@ -12,7 +12,8 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    public function register(Request $request) {
+    public function register(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'email' => 'required|email|unique:users,email',
@@ -40,7 +41,8 @@ class AuthController extends Controller
         ]);
     }
 
-    public function login(Request $request) {
+    public function login(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'email' => 'required',
             'password' => 'required'
@@ -59,19 +61,25 @@ class AuthController extends Controller
                 'status' => Response::HTTP_UNAUTHORIZED,
                 'message' => 'Invalid Credentials'
             ]);
-        } 
+        } else {
+            if ($user->role_as == User::Admin) {
+                $token = $user->createToken($user->email. '_token', ['server:admin'])->plainTextToken;
+            } else {
+                $token = $user->createToken($user->email . '_token', [''])->plainTextToken;
+            }
+        }
         
-        $token = $user->createToken($user->email . '_token')->plainTextToken;
-
         return response()->json([
             'status' => Response::HTTP_OK,
             'name' => $user->name,
             'token' => $token,
-            'message' => 'Logged In Successfully'
+            'message' => 'Logged In Successfully',
+            'role' => $user->role_as
         ]);
     }
 
-    public function logout() {
+    public function logout()
+    {
         auth()->user()->tokens()->delete();
 
         return response()->json([

@@ -1,0 +1,57 @@
+# PHP CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-php/ for more details
+#
+version: 2
+jobs:
+  build:
+    docker:
+      # specify the version you desire here
+      - image: circleci/php:7.0.32-apache-stretch-node-browsers
+
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # - image: circleci/mysql:5.7.18
+      #   environment:
+      #     MYSQL_ALLOW_EMPTY_PASSWORD: yes
+      #     MYSQL_ROOT_PASSWORD: ''
+      #     MYSQL_DATABASE: circle_test
+
+    # working_directory: ~/linkcom
+
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      
+      # Install PHP Extension
+      # - run: sudo apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libmcrypt-dev libpng-dev && sudo -E docker-php-ext-install -j$(nproc) iconv mcrypt && sudo docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && sudo -E docker-php-ext-install -j$(nproc) gd pdo_mysql 
+    #   - run: sudo docker-php-ext-install gd
+      
+      - run: cp .env.circle .env
+
+      # Download and cache dependencies
+      # Composer
+      - restore_cache:
+          name: Restore composer cache
+          keys:
+          - composer-{{ checksum "composer.json" }}
+          - composer-
+      - run: composer install -n --prefer-dist
+      - save_cache:
+          name: Store composer cache
+          key: composer-{{ checksum "composer.json" }}
+          paths:
+            - vendor
+      
+      # - run: chmod -R 777 storage
+      # - run: php artisan migrate
+      # run tests!
+      - run: ./vendor/bin/phpcs -n --standard=phpcs.xml
+      - run: ./vendor/bin/phpmd app text phpmd.xml
+      - run: ./vendor/bin/phpunit -d memory_limit=-1 tests
+      - store_test_results:
+          path: tests/_output
+      - store_artifacts:
+          path: tests/_output

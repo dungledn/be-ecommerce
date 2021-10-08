@@ -11,7 +11,9 @@
         "laravel/framework": "^8.54",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
-        "laravel/ui": "^3.3"
+        "laravel/ui": "^3.3",
+        "phpmd/phpmd": "^2.10",
+        "squizlabs/php_codesniffer": "*"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
