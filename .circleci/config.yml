@@ -7,7 +7,7 @@ jobs:
   build:
     docker:
       # Specify the version you desire here
-      - image: cimg/php:8.0.11
+      - image: circleci/php:7.4-node-browsers
 
       - image: circleci/mysql:5.7-ram
         environment:
