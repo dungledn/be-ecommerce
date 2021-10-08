@@ -9,6 +9,11 @@ jobs:
       # Specify the version you desire here
       - image: circleci/php:7.4-node-browsers
 
+      - image: circleci/mysql:5.7.18
+        environment:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_ROOT_PASSWORD: ''
+          MYSQL_DATABASE: circle_test
     steps:
       - checkout
 
@@ -42,14 +47,9 @@ jobs:
             mv .env.testing .env
             php artisan key:generate
 
-      - run:
-          name: "Create database and run migration"
-          command: |
-            touch database/database.sqlite
-            php artisan migrate --env=testing
       
-      # - run: chmod -R 777 storage
-      # - run: php artisan migrate
+      - run: chmod -R 777 storage
+      - run: php artisan migrate
       # run tests!
       - run: ./vendor/bin/phpcs -n --standard=phpcs.xml
       - run: ./vendor/bin/phpmd app text phpmd.xml
