@@ -13,7 +13,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $a = 'test';
+        $a = 'test1';
         $this->middleware('auth');
     }
 
